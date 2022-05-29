@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
+
+
+.gray {background: #eee;}
+.dark {background: #333;}
+a {text-decoration: none;color: #108DFF;}
+.heading {text-align: center;}
+.row {text-align: center;padding: 40px;}
+.row button {margin: 20px;}
+
+
+
+.button-three {
+  background: linear-gradient(-45deg, #02075d, #0000ff);
+}
+
+
+
+.btn {
+  font-family: 'Poppins';
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 6px;
+  background-size: 400% 400%;
+  color: #FFF;
+  text-transform: capitalize;
+  border: 0;
+  padding: 13px 30px;
+  font-size: 15px;
+  animation: Gradient 5s ease infinite;
+  width: 100%;
+  &:hover {
+    background-size: 150% 150%;
+  }
+}
+
+.button-outline {
+  animation: Gradient 10s ease infinite;
+  position: relative;
+  
+  span {
+    position: relative;
+    z-index: 2;
+  }
+  
+  &::after {
+    content:'';
+    position: absolute;
+    border-radius: 4px;
+    z-index: 0;
+    background: #333;
+    top: 2px;
+    bottom: 2px;
+    right: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+  }
+}
+
+@keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+.lockIcon{
+    vertical-align: sub
+}
