@@ -14,6 +14,7 @@ fetch(APIurl)
             var formValue = JSON.parse(productForm);
             currPrice = productDetails[formValue.id];
             document.getElementById("price").innerHTML = currPrice;
+            document.getElementById("price-btn").href = createCheckoutUrl(formValue.id);
             console.log(currPrice, "current Price");
 
 
@@ -23,13 +24,16 @@ fetch(APIurl)
                 var formValue = JSON.parse(productForm, "current Price");
                 currPrice = productDetails[formValue.id];
                 document.getElementById("price").innerHTML = currPrice;
+                document.getElementById("price-btn").href = createCheckoutUrl(formValue.id);
                 console.log(currPrice, "current Price");
             });
     });
 
 
 
-
+function createCheckoutUrl(variantId) {
+    return `/cart/${variantId}:1`;
+}
 
 
 
