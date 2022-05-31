@@ -28,17 +28,18 @@ a {text-decoration: none;color: #108DFF;}
 
 
 @keyframes shake {
-    0% { transform: translate(0px, 0px) rotate(0deg);  }
-    10% { transform: translate(0px, 0px) rotate(0deg);  }
-    20% { transform: translate(0px, 0px) rotate(0deg); }
-    30% { transform: translate(0px, 0px) rotate(0deg); }
-    40% { transform: translate(0px, 0px) rotate(0deg);  }
-    50% { transform: translate(0px, 0px) rotate(0deg); }
-    60% { transform: translate(0px, 0px) rotate(0deg); }
-    70% { transform: translate(0px, 0px) rotate(0deg);  }
-    80% { transform: scaleY(1.06) rotate(0deg); }
-    90% { transform: scaleY(1.1) rotate(0deg); }
-    100% { transform: scaleY(1.06) rotate(0deg); }
+    1%, 9% {
+      transform: translate3d(-1px, -1px, 0);
+    }
+    2%, 8% {
+      transform: translate3d(2px, 2px, 0);
+    }
+    3%, 5%, 7% {
+      transform: translate3d(-4px, -4px, 0);
+    }
+    4%, 6% {
+      transform: translate3d(4px, 4px, 0);
+    }
   }
 
 
