@@ -1,7 +1,9 @@
 
     <a id="price-btn">
-        <button class="btn button-gradient button-three" >
-             <span class="pay-text">Pay  </span> {{ cart.currency.symbol }}<span id="price"></span>
+        <button class="btn button-gradient button-three" style="background-color: {{ block.settings.buttonColor }}">
+            <span style="color: {{ block.settings.textColor }}" > 
+              <span class="pay-text">Pay  </span> {{ cart.currency.symbol }}<span id="price"></span>
+            </span>
            </button>
     </a>
 
@@ -9,12 +11,16 @@
 
     {% schema %}
       {
-        "name": "Hello World",
+        "name": "AAowle BuyNow",
         "target": "section",
         "stylesheet": "app.css",
         "javascript": "app.js",
         "settings": [
-            { "label": "Color", "id": "color", "type": "color", "default": "#000000" }
+            { "label": "Button Color", "id": "buttonColor", "type": "color", "default": "#000000" },
+            { "label": "Text Color", "id": "textColor", "type": "color", "default": "#ffffff" }
         ]
       }
     {% endschema %}
+
+
+    https://newaowle.myshopify.com/admin/themes/current/editor?context=apps&template=product
