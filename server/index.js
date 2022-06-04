@@ -8,6 +8,11 @@ import "dotenv/config";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 
+import getRawBody from "raw-body";
+import crypto from "crypto";
+const secretKey = process.env.SHOPIFY_API_SECRET;
+
+
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
@@ -60,6 +65,33 @@ export async function createServer(
       }
     }
   });
+
+
+
+
+  app.post(
+    ["/customers/data_request", "/customers/redact", "/shop/redact"],
+    async (req, res) => {
+      const hmac = req.get("X-Shopify-Hmac-Sha256");
+
+      const body = await getRawBody(req);
+
+      const hash = crypto
+        .createHmac("sha256", secretKey)
+        // @ts-ignore
+        .update(body, "utf8", "hex")
+        .digest("base64");
+
+      if (hash === hmac) {
+        console.log("Phew, it came from Shopify!");
+        res.sendStatus(200);
+      } else {
+        console.log("Danger! Not from Shopify!");
+        res.sendStatus(401);
+      }
+    }
+  );
+
 
   app.get("/products-count", verifyRequest(app), async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, true);
