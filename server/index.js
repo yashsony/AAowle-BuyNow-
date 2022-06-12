@@ -1,9 +1,11 @@
-// @ts-check
+// @ts-nocheck
 import { resolve } from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import "dotenv/config";
+
+import { ScriptTag } from '@shopify/shopify-api/dist/rest-resources/2022-04/index.js'
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
@@ -66,6 +68,23 @@ export async function createServer(
     }
   });
 
+  app.get("/proxy", async (req, res) => {
+    console.log("request for liquid");
+    res.setHeader('Content-Type', 'application/liquid');
+    res.status(200).sendFile(resolve('public/my.liquid'));
+  });
+
+
+  app.get("/enableIt", async (req, res) => {
+    console.log("request for enabling"); 
+    const test_session = await Shopify.Utils.loadCurrentSession(req, res);
+    const script_tag = new ScriptTag({session: test_session});
+    script_tag.event = "onload";
+    script_tag.src = "https://d2pqf5y4utldd5.cloudfront.net/script.js";
+    await script_tag.save({});
+    res.status(200);
+  });
+
 
 
 
@@ -91,6 +110,8 @@ export async function createServer(
       }
     }
   );
+
+
 
 
   app.get("/products-count", verifyRequest(app), async (req, res) => {
