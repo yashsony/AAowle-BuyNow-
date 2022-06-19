@@ -75,10 +75,34 @@ export async function createServer(
     res.status(200).sendFile(resolve('public/my.liquid'));
   });
 
+  app.get("/getIntialConfig", async (req, res) => {
+    try {
+      const test_session = await Shopify.Utils.loadCurrentSession(req, res);
+      let scriptObj  = await ScriptTag.all({
+        session: test_session,
+      });
+      function checkSrc(item) {
+        return item.src == "https://d2pqf5y4utldd5.cloudfront.net/script.js" ;
+      }
+      console.log(scriptObj);
+      let foundObj = scriptObj.find(checkSrc);
+      if(foundObj){
+        console.log("Script is Activated");
+        res.status(200).send("true");
+      }
+      else{
+        console.log("Script is not Activated");
+        res.status(200).send("false");
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error);
+    }
+  });
+
 
   app.get("/enableIt", async (req, res) => {
     console.log("request for enabling", req.query.activate); 
-
     try {
     const test_session = await Shopify.Utils.loadCurrentSession(req, res);
     let scriptObj  = await ScriptTag.all({

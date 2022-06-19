@@ -15,12 +15,13 @@ import {
   DisplayText,
   ContextualSaveBar,
   Frame,
-  hsbToRgb
+  hsbToRgb,
+  Banner
   
 } from "@shopify/polaris";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { userLoggedInFetch } from "../App";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback,  useLayoutEffect } from "react";
 
 
 
@@ -35,44 +36,72 @@ export function HomePage() {
 
   const [active, setActive] = useState(false);
 
+  const [banner, setBanner] = useState(false);
+
 
 
   const contentStatus = active ? 'Deactivate' : 'Activate';
   const textStatus = active ? 'activated' : 'deactivated';
 
 
+    // when state variable will change
+    async function loadShopConfig() {
+      var data = await fetch("/getIntialConfig");
+  
+      if (data.status == 200) {
+        data = await data.text();
+        if (data == "true") {
+          setActive(() => true); // need to change this logic because it fetches again where state changes
+        } else {
+          setActive(() => false); 
+        }
+      }
+      else{
+        console.log(data);
+      }
+    }
+  
+    useLayoutEffect(() => {
+      if(!banner) loadShopConfig();
+    });
+
+
   async function enableIt() {
     setActive((active) => !active)
     await fetch("/enableIt?activate=" + !active)
     .then((res) => res.text())
-    .then((g) => { console.log(g)})
+    .then((g) => { 
+      setBanner(() => true);
+      setTimeout(() => {
+        setBanner(() => false);
+      }, 3000);
+    })
     .catch((e) => alert("getting error, please try again after some time"));
   }
 
 
 
   const [Textcolor, setTextColor] = useState({
-    hue: 120,
-    brightness: 1,
-    saturation: 1
+    hue: 200,
+    brightness: 0.9,
+    saturation:  0.016985138004246284
   });
 
 
   const [BGcolor, setBGColor] = useState({
-    hue: 120,
-    brightness: 1,
+    hue: 0,
+    brightness: 0,
     saturation: 1
   });
 
 
 function updateTextColor(color){
+  console.log(color)
   setTextColor(color);
-  console.log(hsbToRgb(color));
 }
 
 function updateBGColor(color){
   setBGColor(color);
-  console.log(hsbToRgb(color));
 }
 
 
@@ -95,15 +124,27 @@ async function onSubmit(){
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(obj),
       };
-      var response = await authFetch("/save", requestOptions);
-      var data = await response.text();
-      console.log(data);
+      try {
+        var response = await authFetch("/save", requestOptions);
+        var data = await response.text();
+        console.log(data);
+        setBanner(() => true);
+        setTimeout(() => {
+          setBanner(() => false);
+        }, 5000);
+      } catch (error) {
+         alert("getting error, please try again after some time");
+      }
+
 
 }
 
 
   return (
     <>
+
+      {banner && ( <Banner title= {  "Successfully Saved Changes. It will take around a minute to reflect changes, please wait."}  status="success" />  )}
+
       <Page fullWidth>
         <Layout>
 
@@ -133,6 +174,20 @@ async function onSubmit(){
       <Page>
 
         <Layout>
+
+
+        <Layout.Section oneHalf >
+
+        <Card title="Choose Bankground Color of Button" sectioned >
+
+          <ColorPicker onChange={updateBGColor} color={BGcolor}  fullWidth />
+
+
+        </Card>
+
+        </Layout.Section>
+
+
           <Layout.Section oneHalf>
             <Card title="Choose Text Color of button" sectioned >
 
@@ -143,16 +198,7 @@ async function onSubmit(){
 
           </Layout.Section>
 
-          <Layout.Section oneHalf >
 
-            <Card title="Choose Bankground Color of Button" sectioned >
-
-              <ColorPicker onChange={updateBGColor} color={BGcolor}  fullWidth />
-
-
-            </Card>
-            
-          </Layout.Section>
 
           
 
