@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
+
+#price-btn {text-decoration: none;}
+
+.button-three {
+background:  #02075d
+}
+
+
+
+.button-three {
+font-family: 'Poppins' !important;
+font-weight: 500 !important;
+letter-spacing: 0.5px;
+cursor: pointer;
+border-radius: 6px !important;
+background-size: 400% 400%;
+color: #FFF;
+text-transform: capitalize;
+border: 0 !important;
+padding: 13px 30px;
+font-size: 15px !important;
+animation: shake 10s ease-in-out infinite;
+width: 100%;
+margin-bottom: 10px;
+margin-top: 10px;
+box-shadow: 0px 0px !important;
+}
+
+
+@keyframes shake {
+  1%, 9% {
+    transform: translate3d(-1px, -1px, 0);
+  }
+  2%, 8% {
+    transform: translate3d(2px, 2px, 0);
+  }
+  3%, 5%, 7% {
+    transform: translate3d(-4px, -4px, 0);
+  }
+  4%, 6% {
+    transform: translate3d(4px, 4px, 0);
+  }
+}
+
+
+.lockIcon{
+  vertical-align: sub
+}

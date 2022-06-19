@@ -6,6 +6,7 @@ import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import "dotenv/config";
 
 import { ScriptTag } from '@shopify/shopify-api/dist/rest-resources/2022-04/index.js'
+import { Metafield } from '@shopify/shopify-api/dist/rest-resources/2022-04/index.js';
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
@@ -76,13 +77,48 @@ export async function createServer(
 
 
   app.get("/enableIt", async (req, res) => {
-    console.log("request for enabling"); 
+    console.log("request for enabling", req.query.activate); 
+
+    try {
     const test_session = await Shopify.Utils.loadCurrentSession(req, res);
-    const script_tag = new ScriptTag({session: test_session});
-    script_tag.event = "onload";
-    script_tag.src = "https://d2pqf5y4utldd5.cloudfront.net/script.js";
-    await script_tag.save({});
-    res.status(200);
+    let scriptObj  = await ScriptTag.all({
+      session: test_session,
+    });
+    console.log("here", scriptObj);
+
+    function checkSrc(item) {
+      return item.src == "https://d2pqf5y4utldd5.cloudfront.net/script.js" ;
+    }
+    let foundObj =   scriptObj.find(checkSrc);
+    if(foundObj == undefined){
+      if(req.query.activate == "true" ){
+        console.log("attaching scriptTag to store");
+        const script_tag = new ScriptTag({session: test_session});
+        script_tag.event = "onload";
+        script_tag.src = "https://d2pqf5y4utldd5.cloudfront.net/script.js";
+        await script_tag.save({});
+      }
+      else{
+        console.log("Already Script is not attched with store");
+      }
+    }
+    else{
+      if(req.query.activate == "true" ){
+        console.log("Already Script is attched with store");
+      }
+      else{
+        let a = await ScriptTag.delete({
+          session: test_session,
+          id: foundObj.id,
+        });
+        console.log("deleting script with store");
+      }
+    }
+    res.status(200).send("success");
+  
+    } catch (error) {
+      res.status(500).send("getting error, please try again after some time");
+    }
   });
 
 
@@ -110,6 +146,48 @@ export async function createServer(
       }
     }
   );
+
+  app.post("/save", verifyRequest(app), async (req, res) => {
+    try {
+      let data = '';
+      req.on('data', chunk => {
+        data += chunk;
+      });
+      req.on('end',async () => {
+        let obj = await JSON.parse(data); 
+        console.log(obj.BGcolor, obj.textColor); 
+
+        const test_session = await Shopify.Utils.loadCurrentSession(req, res);
+
+        const metafield1 = new Metafield({session: test_session});
+        metafield1.namespace = "AAowleBuyNow";
+        metafield1.key = "buttonColor";
+        metafield1.value = obj.BGcolor;
+        metafield1.type = "single_line_text_field";
+        await metafield1.save({});
+    
+        const metafield2 = new Metafield({session: test_session});
+        metafield2.namespace = "AAowleBuyNow";
+        metafield2.key = "textColor";
+        metafield2.value = obj.textColor;
+        metafield2.type = "single_line_text_field";
+        await metafield2.save({});
+
+        const metafield4 = new Metafield({session: test_session});
+        metafield4.namespace = "AAowleBuyNow";
+        metafield4.key = "debugMode";
+        metafield4.value = true;
+        metafield4.type = "boolean";
+        await metafield4.save({});
+
+        
+        res.status(200).send(data);
+      });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
 
 
 
