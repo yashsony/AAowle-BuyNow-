@@ -74,7 +74,7 @@ export function HomePage() {
       setBanner(() => true);
       setTimeout(() => {
         setBanner(() => false);
-      }, 3000);
+      }, 5000);
     })
     .catch((e) => alert("getting error, please try again after some time"));
   }

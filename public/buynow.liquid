@@ -1,0 +1,15 @@
+{% layout none %}
+
+
+  <!-- {{ form | payment_button }} -->
+
+  <div style="visibility: hidden;" class="shopify-payment-button" >
+    <button type="button" id="buyNowButtonAAowle"   style="background-color: {{ shop.metafields.AAowleBuyNow.buttonColor.value  }};" class=" button-gradient AAowleBuyNowbutton shopify-payment-button__button shopify-payment-button__button--unbranded" data-testid="Checkout-button">
+      <span style="color: {{ shop.metafields.AAowleBuyNow.textColor.value  }}" > 
+        <span class="pay-text">Pay  </span> {{ cart.currency.symbol }}<span class="AAowlePrice"></span>
+      </span>
+    </button>
+  </div>
+
+
+

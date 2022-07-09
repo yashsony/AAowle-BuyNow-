@@ -70,7 +70,7 @@
                * @returns 
                */
               function createCheckoutUrl(variantId) {
-                  return `/cart/${variantId}:1`;
+                  return `/checkout/${variantId}:1`;
               }
 
 

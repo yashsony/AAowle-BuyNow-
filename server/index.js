@@ -69,13 +69,19 @@ export async function createServer(
     }
   });
 
-  app.get("/proxy", async (req, res) => {
-    console.log("request for liquid");
+  app.get("/proxy/buynow", async (req, res) => {
+    console.log("request for buynow proxy");
     res.setHeader('Content-Type', 'application/liquid');
-    res.status(200).sendFile(resolve('public/my.liquid'));
+    res.status(200).sendFile(resolve('public/buynow.liquid'));
   });
 
-  app.get("/getIntialConfig", async (req, res) => {
+  app.get("/proxy/stickybuynow", async (req, res) => {
+    console.log("request for sticky buynow proxy");
+    res.setHeader('Content-Type', 'application/liquid');
+    res.status(200).sendFile(resolve('public/Stickybuynow.liquid'));
+  });
+
+  app.get("/getIntialConfig", verifyRequest(app), async (req, res) => {
     try {
       const test_session = await Shopify.Utils.loadCurrentSession(req, res);
       let scriptObj  = await ScriptTag.all({
@@ -101,7 +107,7 @@ export async function createServer(
   });
 
 
-  app.get("/enableIt", async (req, res) => {
+  app.get("/enableIt", verifyRequest(app), async (req, res) => {
     console.log("request for enabling", req.query.activate); 
     try {
     const test_session = await Shopify.Utils.loadCurrentSession(req, res);
